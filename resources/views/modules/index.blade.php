@@ -28,28 +28,23 @@
             <table class="w-full min-w-full mt-10 divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                             Code
                         </th>
-                        <th
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                            Name
+                        </th>
+                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                             Semester
                         </th>
-                        <th
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            Description
-                        </th>
-                        <th
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+
+                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                             Credit
                         </th>
-                        <th
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                             Status
                         </th>
-                        <th
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                             Actions
                         </th>
                     </tr>
@@ -61,11 +56,12 @@
                                 {{ $item->code }}
                             </td>
                             <td class="px-6 py-4 text-gray-900 whitespace-nowrap">
-                                {{ $item->semester }}
+                                {{ $item->name }}
                             </td>
                             <td class="px-6 py-4 text-gray-900 whitespace-nowrap">
-                                {{ $item->description }}
+                                {{ $item->semester }}
                             </td>
+
                             <td class="px-6 py-4 text-gray-900 whitespace-nowrap">
                                 {{ $item->credit }}
                             </td>
@@ -81,8 +77,7 @@
                                 <form action="{{ route('modules.destroy', $item->id) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit"
-                                        class="ml-2 text-red-600 hover:text-red-900">Delete</button>
+                                    <button type="submit" class="ml-2 text-red-600 hover:text-red-900">Delete</button>
                                 </form>
                             </td>
                         </tr>

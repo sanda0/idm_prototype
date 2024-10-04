@@ -24,7 +24,7 @@ class CourseController extends Controller
               ->orWhereRaw('LOWER(category) like ?', ["%{$search}%"]);
         }
 
-        $courses = $query->paginate(10);
+        $courses = $query->select('id','name','faculty','category','status')->paginate(10);
         return view('courses.index', compact('courses'));
     }
 

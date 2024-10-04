@@ -21,7 +21,7 @@ class ModuleController extends Controller
 
         }
 
-        $modules = $query->paginate(10);
+        $modules = $query->select('id', 'code', 'name', 'semester', 'credit', 'status')->paginate(10);
         return view('modules.index', compact('modules'));
     }
 
@@ -110,7 +110,7 @@ class ModuleController extends Controller
      */
     public function destroy(Module $module)
     {
-        if(!$module->isEditable()){
+        if (!$module->isEditable()) {
             return view('errors.error', ['error' => 'Module cannot be deleted after 6 hours of publishing.']);
         }
         $module->delete();
