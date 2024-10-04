@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Batch;
 use App\Models\Student;
+use App\Models\User;
+use Hash;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -12,7 +15,8 @@ class StudentController extends Controller
      */
     public function index()
     {
-        //
+        $students = Student::with('batch.course')->paginate(10);
+        return view('students.index', compact('students'));
     }
 
     /**
@@ -20,7 +24,12 @@ class StudentController extends Controller
      */
     public function create()
     {
-        //
+
+        $batches = Batch::whereHas('course', function ($query) {
+            $query->where('status', 'publish');
+        })->get();
+
+        return view('students.create', compact('batches'));
     }
 
     /**
@@ -28,7 +37,26 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:students',
+            'phone' => 'required|string|max:255',
+            'address' => 'required|string',
+            'batch_id' => 'required|exists:batches,id',
+        ]);
+
+        $user = new User();
+        $user->name = $validatedData['name'];
+        $user->email = $validatedData['email'];
+        $user->password = Hash::make('0000');
+        $user->save();
+        $user->assignRole('Student');
+
+        $validatedData['user_id'] = $user->id;
+
+        Student::create($validatedData);
+
+        return redirect()->route('students.index')->with('success', 'Student created successfully.');
     }
 
     /**

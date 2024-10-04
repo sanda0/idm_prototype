@@ -143,35 +143,38 @@
                     <li class="p-4 bg-white rounded shadow">
                         <div class="flex items-center justify-between">
                             <div>
-                                <h4 class="text-md font-semibold">{{ $batch->name }}</h4>
+                                <h4 class="font-semibold text-md">{{ $batch->name }}</h4>
                             </div>
                             <div class="flex space-x-2">
+                                @if ($course->isEditable())
+                                    <button type="button"
+                                        class="px-2 py-1 text-sm font-bold text-white bg-red-500 rounded hover:bg-red-700 focus:outline-none focus:shadow-outline"
+                                        onclick="deleteBatch('{{ $batch->id }}')">
+                                        {{ __('Delete') }}
+                                    </button>
 
-
-                                <button type="button"
-                                    class="px-2 py-1 text-sm font-bold text-white bg-red-500 rounded hover:bg-red-700 focus:outline-none focus:shadow-outline" onclick="">
-                                    {{ __('Delete') }}
-                                </button>
-
-                                <button type="button"
-                                    class="px-2 py-1 text-sm font-bold text-white bg-green-500 rounded hover:bg-green-700 focus:outline-none focus:shadow-outline"
-                                    onclick="toggleModuleModal('{{ $batch->id }}')">
-                                    {{ __('Add Module') }}
-                                </button>
+                                    <button type="button"
+                                        class="px-2 py-1 text-sm font-bold text-white bg-green-500 rounded hover:bg-green-700 focus:outline-none focus:shadow-outline"
+                                        onclick="toggleModuleModal('{{ $batch->id }}')">
+                                        {{ __('Add Module') }}
+                                    </button>
+                                @endif
                             </div>
                         </div>
                         <ul class="mt-2 space-y-2">
                             @foreach ($batch->modules as $module)
                                 <li class="p-2 bg-gray-100 rounded">
                                     <div class="flex items-center justify-between">
-                                        <span>{{ $module->name }}</span>
+                                        <span>Semester : #{{$module->semester}} - [ {{$module->code}} ]{{ $module->name }} </span>
                                         <div class="flex space-x-2">
 
-
-                                            <button type="button"
-                                                class="px-2 py-1 text-xs font-bold text-white bg-red-500 rounded hover:bg-red-700 focus:outline-none focus:shadow-outline">
-                                                {{ __('Delete') }}
-                                            </button>
+                                            @if ($course->isEditable())
+                                                <button type="button"
+                                                    onclick="removeModule('{{ $module->id }}', '{{ $batch->id }}')"
+                                                    class="px-2 py-1 text-xs font-bold text-white bg-red-500 rounded hover:bg-red-700 focus:outline-none focus:shadow-outline">
+                                                    {{ __('Remove') }}
+                                                </button>
+                                            @endif
 
                                         </div>
                                     </div>
@@ -272,6 +275,63 @@
                         console.error('Error:', error);
                         alert('Form submission failed!');
                     });
+            }
+
+            function deleteBatch(batchID) {
+                if (confirm('Are you sure you want to delete this batch?')) {
+                    fetch("{{ route('batch.destroy') }}", {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                batch_id: batchID
+                            })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            window.location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Form submission failed!');
+                        });
+                }
+            }
+
+            function removeModule(moduleID, batchID) {
+                if (confirm('Are you sure you want to remove this module?')) {
+                    fetch("{{ route('batch.remove_module') }}", {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                module_id: moduleID,
+                                batch_id: batchID
+                            })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            window.location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Form submission failed!');
+                        });
+                }
             }
         </script>
 

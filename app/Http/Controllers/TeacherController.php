@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\Teacher;
+use App\Models\User;
+use Hash;
 use Illuminate\Http\Request;
 
 class TeacherController extends Controller
@@ -12,7 +15,9 @@ class TeacherController extends Controller
      */
     public function index()
     {
-        //
+        $teachers = Teacher::with('course')->paginate(10);
+
+        return view('teachers.index', compact('teachers'));
     }
 
     /**
@@ -20,7 +25,9 @@ class TeacherController extends Controller
      */
     public function create()
     {
-        //
+        $courses = Course::where('status', 'publish')->get();
+
+        return view('teachers.create', compact('courses'));
     }
 
     /**
@@ -28,7 +35,26 @@ class TeacherController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:teachers',
+            'phone' => 'required|string|max:255',
+            'address' => 'required|string',
+            'course_id' => 'required|exists:courses,id',
+        ]);
+
+        $user = new User();
+        $user->name = $validatedData['name'];
+        $user->email = $validatedData['email'];
+        $user->password = Hash::make('0000');
+        $user->save();
+        $user->assignRole('Teacher');
+
+        $validatedData['user_id'] = $user->id;
+
+        Teacher::create($validatedData);
+
+        return redirect()->route('teachers.index')->with('success', 'Teacher created successfully.');
     }
 
     /**

@@ -72,17 +72,12 @@ class ModuleController extends Controller
 
         $module = Module::find($module->id);
 
-        $user = auth()->user();
-        if ($user->hasRole('Academic Head')) {
-            if ($module->status == 'publish') {
-                if ($module->published_at && $module->published_at->lt(now()->subHours(6))) {
-                    return view('errors.error', ['error' => 'Module cannot be edited after 6 hours of publishing.']);
-                }
-            }
-            return view('modules.edit', compact('module'));
-        } else {
-            return view('modules.edit', compact('module'));
+        if (!$module->isEditable()) {
+            return view('errors.error', ['error' => 'Module cannot be edited after 6 hours of publishing.']);
         }
+
+        return view('modules.edit', compact('module'));
+
 
 
     }
@@ -115,6 +110,11 @@ class ModuleController extends Controller
      */
     public function destroy(Module $module)
     {
-        //
+        if(!$module->isEditable()){
+            return view('errors.error', ['error' => 'Module cannot be deleted after 6 hours of publishing.']);
+        }
+        $module->delete();
+
+        return redirect()->route('modules.index')->with('success', 'Module deleted successfully.');
     }
 }

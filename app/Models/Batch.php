@@ -16,13 +16,14 @@ class Batch extends Model
         return $this->belongsTo(Course::class);
     }
 
-    public function students()
-    {
-        return $this->hasMany(Student::class);
-    }
 
     public function modules()
     {
-        return $this->belongsToMany(Module::class);
+        return $this->belongsToMany(Module::class)->orderBy('semester');
+    }
+
+    public function students()
+    {
+        return $this->hasMany(Student::class);
     }
 }
