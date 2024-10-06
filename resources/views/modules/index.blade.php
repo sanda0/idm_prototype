@@ -42,6 +42,9 @@
                             Credit
                         </th>
                         <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                            Category
+                        </th>
+                        <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                             Status
                         </th>
                         <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
@@ -65,6 +68,11 @@
                             <td class="px-6 py-4 text-gray-900 whitespace-nowrap">
                                 {{ $item->credit }}
                             </td>
+
+                            <td class="px-6 py-4 text-gray-900 whitespace-nowrap">
+                                {{ $item->category }}
+                            </td>
+
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
                                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $item->status == 'publish' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">

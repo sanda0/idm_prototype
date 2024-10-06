@@ -17,7 +17,8 @@ class Module extends Model
         'description',
         'credit',
         'status',
-        'published_at'
+        'published_at',
+        'category',
     ];
 
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Batch;
 use App\Models\Course;
 use App\Models\Module;
+use App\Models\Rules;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -79,7 +80,10 @@ class CourseController extends Controller
 
         $all_modules = Module::where('status', 'publish')->get();
 
-        return view('courses.edit', compact('course', 'all_modules'));
+        $rules = Rules::where('course_id', $course->id)->get();
+
+
+        return view('courses.edit', compact('course', 'all_modules','rules'));
     }
 
     /**
@@ -180,5 +184,26 @@ class CourseController extends Controller
         $batch->modules()->detach($request->input('module_id'));
         
         return response()->json(['message' => 'Module removed successfully.']);
+    }
+
+    public function storeRule(Request $request)
+    {
+        $request->validate([
+            'course_id' => 'required|integer|exists:courses,id',
+            'semester' => 'required|integer',
+            'elective_module_count' => 'required|integer',
+        ]);
+
+        $course = Course::find($request->input('course_id'));
+
+        $ruleData = $request->json()->all();
+
+        Rules::create([
+            'semester' => $ruleData['semester'],
+            'elective_module_count' => $ruleData['elective_module_count'],
+            'course_id' => $course->id,
+        ]);
+
+        return response()->json(['message' => 'Rule created successfully.']);
     }
 }

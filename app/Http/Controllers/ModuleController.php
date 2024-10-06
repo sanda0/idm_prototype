@@ -21,7 +21,7 @@ class ModuleController extends Controller
 
         }
 
-        $modules = $query->select('id', 'code', 'name', 'semester', 'credit', 'status')->paginate(10);
+        $modules = $query->select('id', 'code', 'name', 'semester', 'credit', 'status','category')->paginate(10);
         return view('modules.index', compact('modules'));
     }
 
@@ -45,6 +45,7 @@ class ModuleController extends Controller
             'description' => 'nullable|string',
             'credit' => 'required|numeric',
             'status' => 'required|in:draft,publish',
+            'category' => 'required|in:core,elective',
         ]);
 
         if ($validatedData['status'] === 'publish') {
@@ -94,6 +95,7 @@ class ModuleController extends Controller
             'description' => 'nullable|string',
             'credit' => 'required|numeric',
             'status' => 'required|in:draft,publish',
+            'category' => 'required|in:core,elective',
         ]);
 
         if ($validatedData['status'] === 'publish') {

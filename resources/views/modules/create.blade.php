@@ -56,6 +56,17 @@
                     </select>
                 </div>
                 <div class="mb-4">
+                    <label class="block mb-2 text-sm font-bold text-gray-700" for="category">
+                        {{ __('Category') }}
+                    </label>
+                    <select
+                        class="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                        id="category" name="category" required>
+                        <option value="core">{{ __('Core') }}</option>
+                        <option value="elective">{{ __('Elective') }}</option>
+                    </select>
+                </div>
+                <div class="mb-4">
                     <label class="block mb-2 text-sm font-bold text-gray-700" for="description">
                         {{ __('Description') }}
                     </label>

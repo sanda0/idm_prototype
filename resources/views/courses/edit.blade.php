@@ -80,13 +80,95 @@
                 </div>
             </form>
 
-            <div class="flex justify-end space-x-4">
+            <hr>
+
+            <div class="flex justify-end mt-8 space-x-4">
                 <button type="button"
                     class="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700 focus:outline-none focus:shadow-outline"
                     onclick="toggleModal('batchModal')">
                     {{ __('Create Batch') }}
                 </button>
             </div>
+
+            {{-- rules  --}}
+
+            <div class="mt-8">
+                <h3 class="text-lg font-medium leading-6 text-gray-900">{{ __('Rules') }}</h3>
+                <div class="mb-4"></div>
+                <form id="ruleForm" class="flex space-x-4">
+                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <div class="flex-1">
+                        <label class="block mb-2 text-sm font-bold text-gray-700" for="rule_semester">
+                            {{ __('Semester') }}
+                        </label>
+                        <input
+                            class="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                            id="rule_semester" type="number" name="rule_semester" required>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block mb-2 text-sm font-bold text-gray-700" for="elective_module_count">
+                            {{ __('Elective Module Count') }}
+                        </label>
+                        <input
+                            class="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                            id="elective_module_count" type="number" name="elective_module_count" required>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="button"
+                            class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+                            onclick="addRule()">
+                            {{ __('Add Rule') }}
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-8">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th
+                                    class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                    {{ __('Semester') }}
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                    {{ __('Elective Module Count') }}
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                    {{ __('Actions') }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach ($course->rules as $rule)
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {{ $rule->semester }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {{ $rule->elective_module_count }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button type="button"
+                                            class="px-2 py-1 text-xs font-bold text-white bg-red-500 rounded hover:bg-red-700 focus:outline-none focus:shadow-outline"
+                                            onclick="deleteRule('{{ $rule->id }}')">
+                                            {{ __('Delete') }}
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+
+
+
+
+
             <!-- Modal -->
             <div id="batchModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
                 <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
@@ -165,7 +247,8 @@
                             @foreach ($batch->modules as $module)
                                 <li class="p-2 bg-gray-100 rounded">
                                     <div class="flex items-center justify-between">
-                                        <span>Semester : #{{$module->semester}} - [ {{$module->code}} ]{{ $module->name }} </span>
+                                        <span>Semester : #{{ $module->semester }} - [ {{ $module->code }}
+                                            ]{{ $module->name }} </span>
                                         <div class="flex space-x-2">
 
                                             @if ($course->isEditable())
@@ -333,10 +416,39 @@
                         });
                 }
             }
-        </script>
+
+            function addRule() {
+                const formData = {
+                    course_id: courseID,
+                    semester: document.getElementById('rule_semester').value,
+                    elective_module_count: document.getElementById('elective_module_count').value
+                };
+
+                fetch("{{ route('rules.store') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Form submission failed!');
+                    });
+            }
 
 
-        <script>
+
             const storeBatchUrl = "{{ route('batch.store') }}";
             const courseID = "{{ $course->id }}";
 

@@ -32,4 +32,10 @@ class Course extends Model
             return true;
         }
     }
+
+    public function rules()
+    {
+        return $this->hasMany(Rules::class);
+    }
+
 }
