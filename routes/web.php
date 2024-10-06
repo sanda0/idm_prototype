@@ -42,6 +42,7 @@ Route::middleware(['auth','roles:Academic Head,Admin'])->group(function () {
     Route::post('batchs_add_module', [CourseController::class, 'addModule'])->name('batch.add_module');
     Route::delete('batchs_remove_module', [CourseController::class, 'removeModule'])->name('batch.remove_module');
     Route::post('rules', [CourseController::class, 'storeRule'])->name('rules.store');
+    Route::delete('rules', [CourseController::class, 'destroyRule'])->name('rules.destroy');
 
 
 });

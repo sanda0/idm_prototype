@@ -447,6 +447,34 @@
                     });
             }
 
+            function deleteRule(ruleID) {
+                if (confirm('Are you sure you want to delete this rule?')) {
+                    fetch("{{ route('rules.destroy') }}", {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                rule_id: ruleID
+                            })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            window.location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Form submission failed!');
+                        });
+                }
+            }
+
 
 
             const storeBatchUrl = "{{ route('batch.store') }}";

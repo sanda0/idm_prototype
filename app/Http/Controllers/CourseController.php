@@ -206,4 +206,17 @@ class CourseController extends Controller
 
         return response()->json(['message' => 'Rule created successfully.']);
     }
+
+    public function destroyRule(Request $request)
+    {
+        $request->validate([
+            'rule_id' => 'required|integer|exists:rules,id',
+        ]);
+
+        $rule = Rules::find($request->input('rule_id'));
+
+        $rule->delete();
+
+        return response()->json(['message' => 'Rule deleted successfully.']);
+    }
 }
