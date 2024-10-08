@@ -248,7 +248,9 @@
                                 <li class="p-2 bg-gray-100 rounded">
                                     <div class="flex items-center justify-between">
                                         <span>Semester : #{{ $module->semester }} - [ {{ $module->code }}
-                                            ]{{ $module->name }} </span>
+                                            ]{{ $module->name }} 
+                                                ({{ $module->category}})
+                                             </span>
                                         <div class="flex space-x-2">
 
                                             @if ($course->isEditable())

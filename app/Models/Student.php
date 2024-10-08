@@ -30,4 +30,9 @@ class Student extends Model
         return $this->belongsTo(Batch::class);
     }
 
+    public function electiveModules()
+    {
+        return StudentElectiveMoudle::where('student_id', $this->id)->where('batch_id', $this->batch_id)->get();
+    }
+
 }

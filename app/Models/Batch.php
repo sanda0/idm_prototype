@@ -9,7 +9,7 @@ class Batch extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name',  'course_id'];
+    protected $fillable = ['name', 'course_id'];
 
     public function course()
     {
@@ -25,5 +25,12 @@ class Batch extends Model
     public function students()
     {
         return $this->hasMany(Student::class);
+    }
+
+    public function getElectiveModulesBySemester($semester)
+    {
+
+        return $this->belongsToMany(Module::class)->where('semester', $semester)->where('category', 'elective')->get();
+
     }
 }
